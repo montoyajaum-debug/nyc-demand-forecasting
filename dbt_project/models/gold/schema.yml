@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: dim_zone
+    description: Zonas TLC con área de análisis; perímetro CBD derivado de los datos.
+    columns:
+      - name: location_id
+        tests: [unique, not_null]
+      - name: area
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['CBD (cargo)','Frontera CBD','Manhattan resto','Aeropuertos','Otros boroughs','Desconocida']
+
+  - name: gold_demand_zone_hour
+    description: Viajes por zona de recogida y hora, grilla completa (horas sin viajes = 0).
+    columns:
+      - name: trips
+        tests:
+          - not_null
+          - accepted_range: {arguments: {min_value: 0}}
+      - name: area
+        tests: [not_null]
+      - name: hour
+        tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 23}}
+
+  - name: gold_demand_daily_area
+    columns:
+      - name: trips
+        tests:
+          - accepted_range: {arguments: {min_value: 1}}

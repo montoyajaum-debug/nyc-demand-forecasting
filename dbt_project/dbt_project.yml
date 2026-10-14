@@ -17,6 +17,11 @@ vars:
   max_distance_mi: 100
   max_fare_usd: 500
   min_duration_ghost_min: 1
+  # Cargo por congestión (Congestion Relief Zone): inicio y criterio de derivación de zonas
+  cbd_start_date: "2025-01-05"
+  cbd_share_inside: 0.6      # % de viajes intra-zona que pagan el cargo para considerar la zona dentro del CBD
+  cbd_share_border: 0.1      # entre este valor y el anterior: zona frontera (calle 60)
+  cbd_min_trips: 10
 
 seeds:
   nyc_demand:
@@ -27,4 +32,6 @@ seeds:
 models:
   nyc_demand:
     silver:
+      +materialized: table
+    gold:
       +materialized: table

@@ -40,7 +40,7 @@ la causa exacta no está confirmada. No afecta a la demanda → se documenta com
 ## Controles automáticos (dbt test)
 - Conciliación: bronze = silver + rechazadas, por mes (`assert_row_reconciliation`)
 - Alerta si un mes descarta > 10% (`assert_reject_rate_below_threshold`)
-- Rangos, nulos, catálogos e integridad referencial con zonas (25 tests en total)
+- Rangos, nulos, catálogos e integridad referencial con zonas (18 tests en silver, 29 en total con gold)
 
 
 ## Validación en 6 meses (oct-2024 a mar-2025, 22,3 M registros)
