@@ -56,6 +56,10 @@ jupyter notebook notebooks/01_eda.ipynb
 
 # 5. Modelo: backtest de 8 semanas + pronóstico a 7 días (~10 min)
 python src/ml/train.py
+
+# 6. Publicar tablas agregadas en MotherDuck (token en variable de entorno, nunca en el código)
+$env:motherduck_token = "<tu token>"      # PowerShell, solo para la sesión actual
+python src/publish/to_motherduck.py
 ```
 
 ## Calidad de datos
@@ -74,6 +78,7 @@ llegada y un cambio estructural en la fuente desde enero 2025.
 src/ingest/      ingesta incremental con log de auditoría
 src/quality/     perfilado de calidad
 src/ml/          features (rezagos >= 7 días, sin fuga), backtest, pronóstico y reporte
+src/publish/     carga de tablas agregadas a MotherDuck (~15 MB) para Claude Dashboards
 dbt_project/     modelos silver (limpieza) y gold (dim_zone, demanda zona-hora, demanda diaria por área)
 notebooks/       EDA ejecutado (01_eda.ipynb)
 docs/img/        gráficos del EDA
