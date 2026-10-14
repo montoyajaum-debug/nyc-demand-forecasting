@@ -3,7 +3,7 @@
 > Predicción de demanda de viajes por zona y hora en Nueva York (NYC TLC Trip Records)
 > y análisis del impacto del cargo por congestión (enero 2025).
 
-**Estado:** 🟢 Fase 1 (ingesta + calidad + silver) · 🟢 Fase 2 (gold + EDA) · 🟡 Fase 3 (modelo predictivo)
+**Estado:** 🟢 Fase 1 (ingesta + calidad + silver) · 🟢 Fase 2 (gold + EDA) · 🟢 Fase 3 (modelo predictivo) · 🟡 Fase 4 (MotherDuck + Claude Dashboards)
 
 ## Hallazgos principales (oct-2024 a mar-2025)
 
@@ -14,10 +14,13 @@
 | **Concentración** | 32 zonas (12%) generan el 80% de la demanda; el perímetro del cargo por congestión, el 58% |
 | **Cargo por congestión** | La comparación ingenua muestra +56% de viajes en otros boroughs. **Es un artefacto de la fuente** (registros `payment_type = 0`). Corregido, el CBD (−10%) no cae más que el resto de Manhattan (−11%) |
 | **Para el modelo** | 49% de las horas-zona tienen 0 viajes → pérdida para conteos (Poisson/Tweedie) |
+| **Modelo predictivo** | A 7 días, LightGBM (WAPE 18,7%) **no supera** a la media de 4 semanas (18,3%) tras 6 variantes probadas. Se publica el baseline. El suelo de ruido (9,7%) indica que el margen restante depende de variables externas (clima, eventos) |
 
 ![Variación por área](docs/img/04_variacion_por_area.png)
 
-Análisis completo: [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb)
+Análisis completo: [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb) · Modelo: [`reports/model/MODELO.md`](reports/model/MODELO.md)
+
+![Backtest](docs/img/07_backtest_wape.png)
 
 ## Arquitectura
 
@@ -28,7 +31,7 @@ TLC (Parquet mensual) → ingest.py → bronze (crudo) → perfilado de calidad
 ```
 
 ## Stack
-DuckDB · dbt-duckdb · Pandera · LightGBM · MLflow · MotherDuck · Claude Dashboards · Power BI
+DuckDB · dbt-duckdb · LightGBM · MLflow · MotherDuck · Claude Dashboards · Power BI
 
 ## Cómo reproducir
 
@@ -48,8 +51,11 @@ cd dbt_project
 dbt build --profiles-dir .
 cd ..
 
-# 4. EDA (requiere: pip install matplotlib jupyter)
+# 4. EDA
 jupyter notebook notebooks/01_eda.ipynb
+
+# 5. Modelo: backtest de 8 semanas + pronóstico a 7 días (~10 min)
+python src/ml/train.py
 ```
 
 ## Calidad de datos
@@ -67,11 +73,13 @@ llegada y un cambio estructural en la fuente desde enero 2025.
 ```
 src/ingest/      ingesta incremental con log de auditoría
 src/quality/     perfilado de calidad
+src/ml/          features (rezagos >= 7 días, sin fuga), backtest, pronóstico y reporte
 dbt_project/     modelos silver (limpieza) y gold (dim_zone, demanda zona-hora, demanda diaria por área)
 notebooks/       EDA ejecutado (01_eda.ipynb)
 docs/img/        gráficos del EDA
 dashboards/      SQL y capturas de Claude Dashboards
 reports/quality/ reportes de calidad por mes
+reports/model/   resultados del modelo (MODELO.md, métricas por semana)
 data/            (ignorado por git)
 ```
 
