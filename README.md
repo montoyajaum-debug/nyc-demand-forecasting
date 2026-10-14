@@ -3,7 +3,7 @@
 > Predicción de demanda de viajes por zona y hora en Nueva York (NYC TLC Trip Records)
 > y análisis del impacto del cargo por congestión (enero 2025).
 
-**Estado:** 🟢 Fase 1 (ingesta + calidad + silver) · 🟢 Fase 2 (gold + EDA) · 🟢 Fase 3 (modelo predictivo) · 🟡 Fase 4 (MotherDuck + Claude Dashboards)
+**Estado:** 🟢 Fase 1 (ingesta + calidad + silver) · 🟢 Fase 2 (gold + EDA) · 🟢 Fase 3 (modelo predictivo) · 🟢 Fase 4 (MotherDuck + Claude Dashboards)
 
 ## Hallazgos principales (oct-2024 a mar-2025)
 
@@ -21,6 +21,23 @@
 Análisis completo: [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb) · Modelo: [`reports/model/MODELO.md`](reports/model/MODELO.md)
 
 ![Backtest](docs/img/07_backtest_wape.png)
+
+## Dashboard (Claude Dashboards + MotherDuck)
+
+![Demo del dashboard](docs/video/demo.gif)
+
+Dashboard construido con **Claude Dashboards** sobre las tablas publicadas en **MotherDuck**. Cada cifra y gráfico es una
+consulta SQL en vivo y muestra su código en el panel *Sources*, de modo que cualquier número es auditable. Además, se puede
+**comentar cualquier gráfico** mencionando a @Claude: la respuesta llega en el mismo hilo, calculada con los datos.
+Consultas: [`dashboards/sql/`](dashboards/sql/) · Video en alta calidad: [`docs/video/nyc_dashboard_linkedin.mp4`](docs/video/nyc_dashboard_linkedin.mp4)
+
+| Resumen | Cada número muestra su SQL |
+|---|---|
+| ![Resumen](docs/img/dashboard/01_resumen.jpg) | ![Fuentes y SQL](docs/img/dashboard/05_fuentes_sql.jpg) |
+| **Backtest y pronóstico a 7 días** | **Zonas con más demanda prevista** |
+| ![Backtest y pronóstico](docs/img/dashboard/03_backtest_pronostico.jpg) | ![Zonas](docs/img/dashboard/04_zonas.jpg) |
+| **Pregunta en un comentario sobre el gráfico** | **Claude responde en el hilo con datos** |
+| ![Comentario](docs/img/dashboard/06_comentario_pregunta.jpg) | ![Respuesta](docs/img/dashboard/07_comentario_respuesta.jpg) |
 
 ## Arquitectura
 
@@ -81,8 +98,9 @@ src/ml/          features (rezagos >= 7 días, sin fuga), backtest, pronóstico 
 src/publish/     carga de tablas agregadas a MotherDuck (~15 MB) para Claude Dashboards
 dbt_project/     modelos silver (limpieza) y gold (dim_zone, demanda zona-hora, demanda diaria por área)
 notebooks/       EDA ejecutado (01_eda.ipynb)
-docs/img/        gráficos del EDA
-dashboards/      SQL y capturas de Claude Dashboards
+docs/img/        gráficos del EDA, del modelo y capturas del dashboard
+docs/video/      demo del dashboard (MP4 para LinkedIn + GIF)
+dashboards/      consultas SQL del dashboard en Claude Dashboards
 reports/quality/ reportes de calidad por mes
 reports/model/   resultados del modelo (MODELO.md, métricas por semana)
 data/            (ignorado por git)
