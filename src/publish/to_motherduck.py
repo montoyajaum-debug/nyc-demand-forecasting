@@ -48,9 +48,14 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    local = duckdb.connect(args.db, read_only=True)
-    src = local.execute("select current_database()").fetchone()[0]  # nombre del catálogo local
-    existing = {r[0] for r in local.execute("select table_name from duckdb_tables()").fetchall()}
+    # Conexión principal en memoria (escribible) + base local adjunta en SOLO LECTURA.
+    # Si la conexión principal fuera de solo lectura, DuckDB adjuntaría MotherDuck también
+    # en solo lectura y no se podría publicar.
+    local = duckdb.connect()
+    src = "src_local"
+    local.execute(f"ATTACH '{Path(args.db).as_posix()}' AS {src} (READ_ONLY)")
+    existing = {r[0] for r in local.execute(
+        f"select table_name from duckdb_tables() where database_name = '{src}'").fetchall()}
     missing = [t for t in TABLES if t not in existing]
     if missing:
         sys.exit(f"Faltan tablas locales: {missing}. Ejecuta `dbt build` y `python src/ml/train.py` primero.")
@@ -60,7 +65,7 @@ def main() -> int:
 
     print("Tablas a publicar:")
     for t in TABLES:
-        n = local.execute(f"select count(*) from {t}").fetchone()[0]
+        n = local.execute(f"select count(*) from {src}.main.{t}").fetchone()[0]
         print(f"  {t:<26}{n:>12,} filas")
     if args.dry_run:
         print("\n--dry-run: no se ha conectado a MotherDuck.")
