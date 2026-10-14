@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: silver_yellow_trips
+    description: >
+      Viajes de taxi amarillo limpios. Un registro = un viaje real.
+      Campos dudosos conservados con banderas is_* (ver DECISIONES_LIMPIEZA.md).
+    columns:
+      - name: pickup_at
+        tests: [not_null]
+      - name: dropoff_at
+        tests: [not_null]
+      - name: duration_min
+        description: NULL cuando la hora de llegada no se registró (dropoff = pickup con recorrido y cobro).
+        tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 240}}
+      - name: fare_amount
+        description: Sin negativos (reversos descartados).
+        tests:
+          - accepted_range: {arguments: {min_value: 0}}
+      - name: passenger_count
+        tests:
+          - accepted_range: {arguments: {min_value: 1, max_value: 9}}
+      - name: pickup_hour
+        tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 23}}
+      - name: pu_location_id
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('taxi_zone_lookup'), field: LocationID}}
+      - name: do_location_id
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('taxi_zone_lookup'), field: LocationID}}
+      - name: rate_code
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Tarifa estándar','JFK','Newark','Nassau/Westchester','Tarifa negociada','Viaje compartido','Desconocido']
+      - name: payment_method
+        tests: [not_null]
+
+  - name: silver_yellow_rejected
+    columns:
+      - name: reject_reason
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['R01_fuera_de_mes','R07_tarifa_negativa','R02_tiempo_invalido','R03_duracion_excesiva','R06_velocidad_imposible','R04_viaje_fantasma']
+
+seeds:
+  - name: taxi_zone_lookup
+    columns:
+      - name: LocationID
+        tests: [unique, not_null]

@@ -1,0 +1,30 @@
+name: nyc_demand
+version: "1.0.0"
+config-version: 2
+profile: nyc_demand
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+vars:
+  # Ruta (glob) de la capa bronze, relativa a dbt_project/
+  bronze_yellow_path: "../data/bronze/yellow/*/*/*.parquet"
+  # Umbrales de limpieza (documentados en reports/quality/DECISIONES_LIMPIEZA.md)
+  max_duration_min: 240
+  max_speed_mph: 80
+  max_distance_mi: 100
+  max_fare_usd: 500
+  min_duration_ghost_min: 1
+
+seeds:
+  nyc_demand:
+    taxi_zone_lookup:
+      +column_types:
+        LocationID: integer
+
+models:
+  nyc_demand:
+    silver:
+      +materialized: table

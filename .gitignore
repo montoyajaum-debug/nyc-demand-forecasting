@@ -1,0 +1,20 @@
+# Datos: nunca se suben al repo (se regeneran con src/ingest/ingest.py)
+data/
+*.parquet
+*.duckdb
+*.duckdb.wal
+# Python
+__pycache__/
+.venv/
+venv/
+*.pyc
+.ipynb_checkpoints/
+# dbt
+dbt_project/target/
+dbt_project/logs/
+dbt_project/dbt_packages/
+# MLflow
+mlruns/
+# Secretos
+.env
+dbt_project/.user.yml

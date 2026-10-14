@@ -1,0 +1,18 @@
+mes,regla,descripcion,filas,pct
+2025-03,R01,"Pickup fuera del mes del archivo",33,0.0008
+2025-03,R02,"Dropoff anterior o igual al pickup",22280,0.5375
+2025-03,R03,"Duración > 4 horas",1473,0.0355
+2025-03,R04,"Distancia <= 0",103722,2.5022
+2025-03,R05,"Distancia > 100 millas",214,0.0052
+2025-03,R06,"Velocidad media > 80 mph (distancia/tiempo imposible)",1050,0.0253
+2025-03,R07,"fare_amount negativo (reversos/anulaciones)",208724,5.0352
+2025-03,R08,"total_amount <= 0",69287,1.6715
+2025-03,R09,"fare_amount > 500 USD",46,0.0011
+2025-03,R10,"passenger_count nulo",916663,22.1135
+2025-03,R11,"passenger_count = 0",22715,0.5480
+2025-03,R12,"passenger_count > 6",13,0.0003
+2025-03,R13,"RatecodeID nulo o fuera de catálogo (1-6)",960651,23.1747
+2025-03,R14,"Zona desconocida (264/265) en origen o destino",28415,0.6855
+2025-03,R15,"payment_type 6 (viaje anulado)",0,0.0000
+2025-03,R16,"total_amount no cuadra con la suma de componentes (tolerancia 0.05)",1384035,33.3884
+2025-03,R17,"Filas duplicadas exactas",0,0.0000
